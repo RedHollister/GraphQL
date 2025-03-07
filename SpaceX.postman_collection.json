@@ -1,0 +1,267 @@
+{
+	"info": {
+		"_postman_id": "d8aa148c-3cb0-4fa2-84a4-30db4f1709c3",
+		"name": "SpaceX",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "38319514"
+	},
+	"item": [
+		{
+			"name": "Ships",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query Ships($limit: Int) {\r\n  ships(limit: $limit) {\r\n    id\r\n    missions {\r\n      name\r\n    }\r\n    name\r\n    position {\r\n      latitude\r\n      longitude\r\n    }\r\n    status\r\n  }\r\n}",
+						"variables": "{\r\n  \"limit\": 3\r\n}"
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}",
+					"host": [
+						"{{baseURL}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Capsules",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.globals.set(\"schemaCapsules\", {\r",
+							"  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"data\": {\r",
+							"      \"type\": \"object\",\r",
+							"      \"properties\": {\r",
+							"        \"capsules\": {\r",
+							"          \"type\": \"array\",\r",
+							"          \"items\": [\r",
+							"            {\r",
+							"              \"type\": \"object\",\r",
+							"              \"properties\": {\r",
+							"                \"id\": {\r",
+							"                  \"type\": \"string\"\r",
+							"                },\r",
+							"                \"missions\": {\r",
+							"                  \"type\": \"null\"\r",
+							"                },\r",
+							"                \"status\": {\r",
+							"                  \"type\": \"string\"\r",
+							"                },\r",
+							"                \"type\": {\r",
+							"                  \"type\": \"string\"\r",
+							"                }\r",
+							"              },\r",
+							"              \"required\": [\r",
+							"                \"id\",\r",
+							"                \"missions\",\r",
+							"                \"status\",\r",
+							"                \"type\"\r",
+							"              ]\r",
+							"            }\r",
+							"          ]\r",
+							"        }\r",
+							"      },\r",
+							"      \"required\": [\r",
+							"        \"capsules\"\r",
+							"      ]\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"data\"\r",
+							"  ]\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code é igual a 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"/**\r",
+							" * teste de contrato\r",
+							" */\r",
+							"\r",
+							"pm.test('Contrato/Schema é válido', function () {\r",
+							"    /**\r",
+							"     * pm.expect -> postman eu espero\r",
+							"     * tv4.validate -> que a lib tv4 valide\r",
+							"     * pm.response.json() -> que o contrato do meu response em formato json\r",
+							"     * pm.globals.get() -> esteja igual aos dados da variável global, da qual é o contrato criado anteriormente\r",
+							"     * to.be.true -> precisa ser verdade\r",
+							"     */\r",
+							"    pm.expect(tv4.validate(pm.response.json(), pm.globals.get(\"schemaCapsules\"))).to.be.true;\r",
+							"});\r",
+							"\r",
+							"/**\r",
+							" * buscar o id\r",
+							" */\r",
+							"\r",
+							"pm.test('Capturar o id', function () {\r",
+							"    console.log(pm.response.json().data.capsules[0].id)\r",
+							"    pm.globals.set(\"capsuleID\", pm.response.json().data.capsules[0].id)\r",
+							"\r",
+							"});\r",
+							"\r",
+							"/**\r",
+							" * capturar o objeto do id para validação\r",
+							" */\r",
+							"\r",
+							"pm.test('Capturar o objeto', function () {\r",
+							"    console.log(pm.response.json().data.capsules[0])\r",
+							"    pm.globals.set(\"capsuleObject\", pm.response.json().data.capsules[0])\r",
+							"\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query Capsules($limit: Int) {\r\n  capsules(limit: $limit) {\r\n    id\r\n    missions {\r\n      name\r\n    }\r\n    status\r\n    type\r\n  }\r\n}",
+						"variables": "{\r\n  \"limit\": 3\r\n}"
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}",
+					"host": [
+						"{{baseURL}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Capsule",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.globals.set(\"schemaCapsule\", {\r",
+							"  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"data\": {\r",
+							"      \"type\": \"object\",\r",
+							"      \"properties\": {\r",
+							"        \"capsule\": {\r",
+							"          \"type\": \"object\",\r",
+							"          \"properties\": {\r",
+							"            \"id\": {\r",
+							"              \"type\": \"string\"\r",
+							"            },\r",
+							"            \"missions\": {\r",
+							"              \"type\": \"null\"\r",
+							"            },\r",
+							"            \"status\": {\r",
+							"              \"type\": \"string\"\r",
+							"            },\r",
+							"            \"type\": {\r",
+							"              \"type\": \"string\"\r",
+							"            }\r",
+							"          },\r",
+							"          \"required\": [\r",
+							"            \"id\",\r",
+							"            \"missions\",\r",
+							"            \"status\",\r",
+							"            \"type\"\r",
+							"          ]\r",
+							"        }\r",
+							"      },\r",
+							"      \"required\": [\r",
+							"        \"capsule\"\r",
+							"      ]\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"data\"\r",
+							"  ]\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code é igual a 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"/**\r",
+							" * teste de contrato\r",
+							" */\r",
+							"\r",
+							"pm.test('Contrato/Schema é válido', function () {\r",
+							"    /**\r",
+							"     * pm.expect -> postman eu espero\r",
+							"     * tv4.validate -> que a lib tv4 valide\r",
+							"     * pm.response.json() -> que o contrato do meu response em formato json\r",
+							"     * pm.globals.get() -> esteja igual aos dados da variável global, da qual é o contrato criado anteriormente\r",
+							"     * to.be.true -> precisa ser verdade\r",
+							"     */\r",
+							"    pm.expect(tv4.validate(pm.response.json(), pm.globals.get(\"schemaCapsule\"))).to.be.true;\r",
+							"});\r",
+							"\r",
+							"pm.test('Validar o id retornado', function () {\r",
+							"    pm.expect(pm.response.json().data.capsule.id).to.be.eql(pm.globals.get(\"capsuleID\"))\r",
+							"\r",
+							"});\r",
+							"\r",
+							"pm.test('Validar os dados do objeto retornado', function () {\r",
+							"    pm.expect(pm.response.json().data.capsule).contain(pm.globals.get(\"capsuleObject\"))\r",
+							"\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query Capsule($capsuleId: ID!) {\r\n  capsule(id: $capsuleId) {\r\n    id\r\n    missions {\r\n      name\r\n    }\r\n    status\r\n    type\r\n  }\r\n}",
+						"variables": "{\r\n  \"capsuleId\": \"{{capsuleID}}\"\r\n}"
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}",
+					"host": [
+						"{{baseURL}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
